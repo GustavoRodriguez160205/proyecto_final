@@ -2,24 +2,26 @@
 const express = require('express')         
 require('../server/Conex/conect')           
 const user = require('./models/model')    
-const morgan = require('morgan')           
-
-// Instanciamos express para crear la aplicación
 const app = express()
+const coockie = require('cookie-parser')
+const morgan = require('morgan')           
+const jwt = require('jsonwebtoken')
+
 
 // Creamos un enrutador específico para las rutas de usuarios
 const userRoutes = express.Router()
-
+const authRoutes = express.Router()
 
 // Middleware para manejar los JSON
 app.use(express.json())
+app.use(coockie())
 
 // Middleware de Morgan para ver información de las peticiones
 app.use(morgan('dev'))
 
-// Definimos el uso de las rutas de usuarios, asociándolas a la URL base '/users'
+// Definimos el uso de las rutas de usuarios
 app.use('/users', userRoutes)
-
+app.use('/auth' , authRoutes)
 
 
 // Definimos la ruta para obtener usuarios con un método GET
@@ -86,18 +88,52 @@ userRoutes.delete('/delete-users/:id' , async (req, res) => {
         }
         return res.status(200).json({resp , message : 'Eliminamos datos'})
 
-
-
     } catch (error) {
         console.log(error);
         
     }
 })
 
+// Ruta para logueo
+authRoutes.post('/login-users' , async (req , res) => {
+   try {
+    // Traemos correo y contraseña del formulario
+    const {correo , password} = req.body
+    const usuario = await user.findOne({correo})
+    if(!usuario){
+        return res.status(401).json({resp , message : 'Email o contraseña incorrectos'})
+    }
+    // Comparamos la contraseña q envie con el formulario con el usuario que yo traje a traves del correo
+    if(password !== usuario.password){
+        return res.status(401).json({resp , message : 'Contraseña Incorrecta'})
+    }
+
+    // Generamos el token
+     const token = jwt.sign(
+     {id: usuario._id  , 
+           correo: usuario.correo ,
+          password: usuario.password ,
+         nombre: usuario.nombre,
+         telefono: usuario.telefono ,
+         empresa: usuario.empresa ,
+         domicilio: usuario.domicilio} ,
+        'hola123' , {expiresIn : '1h'}) 
+    
+        // Creamos una coquie con sierto nombre donde se guarda el token
+        // Verificamos que es tipo de solicitud http 
+                                           // Duración maxima de validez que va a tener un token
+     res.cookie('llave', token , {httpOnly : true , maxAge : 36000000} )
+
+    return res.status(200).json({message: 'Has iniciado sesión correctamente' , token})
+
+   } catch (error) {
+     console.log(error)
+   }
+})
+
 
 // Iniciamos el servidor en el puerto 5500
 app.listen(5500, () => {
-    // Mostramos un mensaje en la consola cuando el servidor está corriendo
     console.log('App corriendo en server', app)
 })
 
