@@ -6,7 +6,7 @@ const user_schema = Schema({
     empresa : {type : String , required: true },
     telefono : {type : Number , required : true},
     correo : {type : String , required : true , unique : true},
-    propietario : {type : String , required : false , unique : false , default : 'Admin'}, // Es para q el admin sea propietario del usuario.
+    propietario : {type : String , required : false , default : 'admin'}, // Es para q el admin sea propietario del usuario.
     is_public : {type : Boolean  , default : true},
     is_visible : {type : Boolean  , default : true},
     password : {type : String , required : false , default : ''}, // Para crear por defecto sin contraseña

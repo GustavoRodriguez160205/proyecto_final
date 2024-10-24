@@ -19,6 +19,7 @@ app.use(coockie())
 // Middleware de Morgan para ver información de las peticiones
 app.use(morgan('dev'))
 
+
 // Definimos el uso de las rutas de usuarios
 app.use('/users', userRoutes)
 app.use('/auth' , authRoutes)
@@ -121,7 +122,7 @@ authRoutes.post('/login-users' , async (req , res) => {
     
         // Creamos una coquie con sierto nombre donde se guarda el token
         // Verificamos que es tipo de solicitud http 
-                                           // Duración maxima de validez que va a tener un token
+                                 // Duración maxima de validez que va a tener un token
      res.cookie('llave', token , {httpOnly : true , maxAge : 36000000} )
 
     return res.status(200).json({message: 'Has iniciado sesión correctamente' , token})
@@ -130,6 +131,82 @@ authRoutes.post('/login-users' , async (req , res) => {
      console.log(error)
    }
 })
+
+
+// Middleware para obtener el token de la coockie
+const  verificarUsuario = (req , res , next) => {
+      const token = req.cookies.llave
+      if(!token){
+         return res.status(404).json({message: 'No se encontro el token'} , token)
+      }
+      
+      try {
+        // Decodificamos el token
+        const decode = jwt.verify(token , 'hola123')
+        // Guardamos la información del token decodificado
+        req.usuario = decode 
+        next()
+      } catch (error) {
+        return res.status(403).json({message: 'Token Invalido'} , token)
+        
+      }
+}
+
+
+
+// Ruta para verificar el token que creamos usando el middleware para verificarUsuario
+// Una vez verificado el usuario procedemos a obtener información de la solicitud
+authRoutes.get('/verify' , verificarUsuario , async (req , res) => {
+    // Traemos los datos del usuario decodificado
+      const {id , nombre , empresa , telefono , correo , password , domicilio , admin} = req.usuario
+      return res.status(200).json({message: 'Se obtuvieron los datos' ,id , nombre , empresa , telefono , correo , password , domicilio , admin})
+
+
+})
+
+// Ruta para cerrar sesión
+authRoutes.get('/logout' , verificarUsuario ,  async (req , res) => {
+       res.clearCookie('llave') 
+       return res.status(200).json({message: 'Se elimino el token correctamente'}) 
+})
+
+
+// Empezamos con el CRUD sobre los contactos
+// Creamos la ruta de Create
+
+userRoutes.post('/create-contact' , verificarUsuario, async (req , res) => {
+       try {
+          const contactosData = req.body 
+          const {correo} = req.body
+          // Busco el contacto por correo y verifico de que el correo sea existente
+          const contacto = await user.findOne({correo})
+          if(contacto){
+
+            return res.status(401).json({message: 'Email existente'})
+          }
+
+          // Verificamos los datos del usuario  logueado en el caso que exista
+          if(req.usuario && req.usuario.nombre){
+            // Usamos el nombre del usuario logueado y le asisgnamos a propietario de contacto
+            contactosData.propietario = req.usuario.nombre
+
+            // Si el usuario no está logueado el contacto sera propietario de Admin 
+          }else{
+            contactosData.propietario = 'admin'
+          }
+
+          // Creamos los contacos en la base de datos
+          const newContact = new user(contactosData)
+          // Guardamos el contacto
+          const respuesta = await newContact.save()
+
+          return res.status(201).json({message: 'Contacto creado con exito' , respuesta})
+
+       } catch (error) {
+          return res.status(500).json(error.message)
+       }
+})
+
 
 
 // Iniciamos el servidor en el puerto 5500
