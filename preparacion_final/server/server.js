@@ -195,7 +195,7 @@ userRoutes.post('/create-contact' , verificarUsuario, async (req , res) => {
             contactosData.propietario = 'admin'
           }
 
-          // Creamos los contacos en la base de datos
+          // Creamos los contactos en la base de datos
           const newContact = new user(contactosData)
           // Guardamos el contacto
           const respuesta = await newContact.save()
@@ -206,6 +206,65 @@ userRoutes.post('/create-contact' , verificarUsuario, async (req , res) => {
           return res.status(500).json(error.message)
        }
 })
+
+
+// Ruta para traer los archivos
+
+userRoutes.get('/get-contact' , async(req , res) => {
+     try {
+        // Traemos todos los recursos de la bd pero que tengan el password vacio
+        const respuesta = await user.find({password: '' , is_visible: true}) // Traemos los contactos que sean visibiles
+
+        if (respuesta.length === 0) {
+            return res.status(404).json({message: 'No hay contactos para mostrar'})
+        }
+
+        return res.status(200).json({message: 'Contactos obtenidos con exito', respuesta})
+     } catch (error) {
+
+        return res.tatus(500).json(error.message)
+     }
+})
+
+
+// Ruta para traer los contactos por propietarios
+
+userRoutes.get('/get-contact-propietario' , verificarUsuario , async(req , res) => {
+     try {
+        const nombresUserLog = req.usuario.nombre
+        const contactos = await user.find({propietario: nombresUserLog}) // Hace una busqueda de nombres de propietarios asociados al perfil
+
+        if (contactos.length === 0) {
+            return res.status(404).json({message: 'No hay contactos creados' , contactos}) 
+        } 
+            return res.status(200).json({message: 'Hay contactos creados' , contactos})
+        
+     } catch (error) {
+        return res.status(500).json(error.message)
+     }
+})
+
+
+// Ruta para traer los contactos por usuarios
+
+userRoutes.get('/get-contact-admin' , verificarUsuario , async(req , res) => {
+    try {
+        const contactos = await user.find({password: ''})
+ 
+        if (contactos.length === 0) {
+            return res.status(404).json({message: 'No hay contactos para mostrar'}) // No hay contactos , la lista de contactos está vacia
+        }
+
+        return res.status(200).json({contactos}) // Traemos los contactos por Administrador
+
+    } catch (error) {
+
+      return res.status(500).json(error.message)
+    }
+})
+
+
+
 
 
 
