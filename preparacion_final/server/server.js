@@ -214,7 +214,8 @@ userRoutes.get('/get-contact' , async(req , res) => {
      try {
         // Traemos todos los recursos de la bd pero que tengan el password vacio
         const respuesta = await user.find({password: '' , is_visible: true}) // Traemos los contactos que sean visibiles
-
+        console.log(respuesta);
+        
         if (respuesta.length === 0) {
             return res.status(404).json({message: 'No hay contactos para mostrar'})
         }
@@ -232,10 +233,13 @@ userRoutes.get('/get-contact' , async(req , res) => {
 userRoutes.get('/get-contact-propietario' , verificarUsuario , async(req , res) => {
      try {
         const nombresUserLog = req.usuario.nombre
+        console.log(nombresUserLog)
         const contactos = await user.find({propietario: nombresUserLog}) // Hace una busqueda de nombres de propietarios asociados al perfil
-
+        console.log(contactos);
+        
         if (contactos.length === 0) {
             return res.status(404).json({message: 'No hay contactos creados' , contactos}) 
+
         } 
             return res.status(200).json({message: 'Hay contactos creados' , contactos})
         
@@ -262,9 +266,6 @@ userRoutes.get('/get-contact-admin' , verificarUsuario , async(req , res) => {
       return res.status(500).json(error.message)
     }
 })
-
-
-
 
 
 
