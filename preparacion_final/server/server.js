@@ -6,6 +6,7 @@ const app = express()
 const coockie = require('cookie-parser')
 const morgan = require('morgan')           
 const jwt = require('jsonwebtoken')
+const cors = require('cors')
 
 
 // Creamos un enrutador específico para las rutas de usuarios
@@ -18,7 +19,10 @@ app.use(coockie())
 
 // Middleware de Morgan para ver información de las peticiones
 app.use(morgan('dev'))
-
+// Especifico el origen del puerto donde realizare las solicitudes
+app.use(cors({
+    origin : ['http://localhost:5173'] , credentials : true
+}))
 
 // Definimos el uso de las rutas de usuarios
 app.use('/users', userRoutes)
