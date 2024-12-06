@@ -21,7 +21,7 @@ app.use(coockie())
 app.use(morgan('dev'))
 // Especifico el origen del puerto donde realizare las solicitudes
 app.use(cors({
-    origin : ['http://localhost:5173'] , credentials : true
+    origin : ['http://localhost:5174'] , credentials : true
 }))
 
 // Definimos el uso de las rutas de usuarios
