@@ -1,8 +1,9 @@
 // Creamos un componente pagina principal
-
 import { useEffect, useState } from "react"
 import Tarjetas from "../Components/Tarjetas"
 import axios from "axios"
+import useAuth from "../auth/auth"
+
 
 
 const Home = () => {
@@ -11,6 +12,8 @@ const Home = () => {
   // Recibe 2 parametros , el primero es una función. Y el segundo es un array
 
   const [contactos, setContactos] = useState([]) // Es una lista vacia porque se supone que vamos a traer una lista de contactos.
+
+  const {nombre,empresa,telefono,correo,password} = useAuth()
 
   useEffect(() => {
     const userData = async () => {
@@ -39,11 +42,12 @@ return (
   <section>
     {
       // Verificamos si la lesta que traemos está vacia. Si está vacia nos va a mostrar el parrafo y si esta llena , nos va a crear las tarjetas.
-         contactos.length === 0 ? (<p>No hay contactos para mostrar</p>) : (contactos.map(contacto => (
-        <Tarjetas key={contacto._id} nombre={contacto.nombre} empresa={contacto.empresa} propietario={contacto.propietario} correo={contacto.correo} telefono={contacto.telefono} domicilio={contacto.domicilio} />)
+        //  contactos.length === 0 ? (<p>No hay contactos para mostrar</p>) : (contactos.map(contacto => (
+        // <Tarjetas key={contacto._id} nombre={contacto.nombre} empresa={contacto.empresa} propietario={contacto.propietario} correo={contacto.correo} telefono={contacto.telefono} domicilio={contacto.domicilio} />)
 
+        <Tarjetas key={"12"} nombre={nombre} empresa={empresa}  correo={correo} telefono={telefono} />
 
-      ))}
+    }
 
   </section>
 

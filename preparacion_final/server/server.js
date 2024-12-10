@@ -1,4 +1,3 @@
-// Importamos las librerías necesarias
 const express = require('express')         
 require('../server/Conex/conect')           
 const user = require('./models/model')    
@@ -21,7 +20,7 @@ app.use(coockie())
 app.use(morgan('dev'))
 // Especifico el origen del puerto donde realizare las solicitudes
 app.use(cors({
-    origin : ['http://localhost:5174'] , credentials : true
+    origin : ['http://localhost:5173'] , credentials : true
 }))
 
 // Definimos el uso de las rutas de usuarios
@@ -227,7 +226,7 @@ userRoutes.get('/get-contact' , async(req , res) => {
         return res.status(200).json({message: 'Contactos obtenidos con exito', respuesta})
      } catch (error) {
 
-        return res.tatus(500).json(error.message)
+        return res.status(500).json(error.message)
      }
 })
 

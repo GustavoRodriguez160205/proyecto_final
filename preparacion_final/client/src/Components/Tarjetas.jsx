@@ -1,4 +1,4 @@
-const Tarjetas = (nombre , empresa , propietario , domicilio , correo , telefono) => {
+const Tarjetas = ({nombre , empresa , propietario , domicilio , correo , telefono}) => {
       // Seteamos los datos para las tarjetas obtenidas del home
     return (
         <> 
