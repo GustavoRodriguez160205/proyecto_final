@@ -1,5 +1,6 @@
 import axios from 'axios'
 import {useState , useEffect} from 'react'
+import {useNavigate} from 'react-router-dom'
 
 
 const useAuth = () => {
@@ -15,6 +16,9 @@ const useAuth = () => {
 
     const [ userId , setUserid ] = useState("")
     const [ isAdmin , setIsadmin ] = useState(false)
+    const navigate = useNavigate()
+    
+
 
     
     useEffect(() => {
@@ -22,7 +26,9 @@ const useAuth = () => {
         const authStatus = async() => {
             try {
                 // Guardamos la respuesta del servidor, es decir , los datos del usuario logueado.
+                
                 const resp = await axios.get('http://localhost:5050/auth/verify' , { withCredentials : true })
+
                 if (resp.status === 200) {
                     // Guardamos los valores que traemos de los usuarios logueados.
                     setIsauth(true)
@@ -34,6 +40,7 @@ const useAuth = () => {
                     setCorreo(resp.data.correo)
                     setUserid(resp.data.id)
                     setIsadmin(resp.data.admin)
+                    console.log(resp.data)
                 } else {
                     setIsauth(false)
                     setNombre("")
@@ -58,11 +65,12 @@ const useAuth = () => {
                 setCorreo("")
                 setUserid("")
                 setIsadmin("")
+
             }
         }
         authStatus()
 
-    }, []) // El array vacio significa que el efecto solo se aplicara en el momento de la renderización.
+    }, [navigate]) // Esto nos va a permitir entre las rutas.
 
 
     return {

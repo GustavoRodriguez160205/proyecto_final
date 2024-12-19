@@ -126,7 +126,7 @@ authRoutes.post('/login-users' , async (req , res) => {
         // Creamos una coquie con sierto nombre donde se guarda el token
         // Verificamos que es tipo de solicitud http 
                                  // Duración maxima de validez que va a tener un token
-     res.cookie('llave', token , {httpOnly : true , maxAge : 36000000} )
+     res.cookie('llave', token , {httpOnly : true , maxAge : 36000000, sameSite: "lax" , secure: false} )
 
     return res.status(200).json({message: 'Has iniciado sesión correctamente' , token})
 

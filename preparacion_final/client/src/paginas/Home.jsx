@@ -32,7 +32,7 @@ const Home = () => {
 
 }}
 userData() // LLamamos a la función user data 
-console.log(typeof (contactos)); // Provamos para ver si nos devuelve los contactos
+console.log(nombre,correo); // Provamos para ver si nos devuelve los contactos
     } , [] ) // El array vacio significa que el efecto solo se aplicara en el momento de la renderización
 
 
