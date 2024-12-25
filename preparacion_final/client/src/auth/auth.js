@@ -1,47 +1,41 @@
-import axios from 'axios'
-import {useState , useEffect} from 'react'
-import {useNavigate} from 'react-router-dom'
-
+import axios from 'axios' // Librería para hacer solicitudes HTTP.
+import { useState, useEffect } from 'react' // Hooks de React para manejar estados y efectos secundarios.
+import { useNavigate } from 'react-router-dom' // Hook para la navegación entre rutas.
 
 const useAuth = () => {
-    // Verificamos si el usuario está o no logueado
-    const [ isauth , setIsauth ] = useState(false)
-    const [ nombre , setNombre] = useState("")
-    const [ empresa , setEmpresa] = useState("")
-    const [ domicilio , setDomicilio ] = useState("")
-    const [ telefono , setTelefono ] = useState("")
-    const [ password  , setPassword] = useState("")
-    const [ correo , setCorreo] = useState("")
+    // Estados para guardar la información del usuario y el estado de autenticación.
+    const [isauth, setIsauth] = useState(false) 
+    const [nombre, setNombre] = useState("") 
+    const [empresa, setEmpresa] = useState("") 
+    const [domicilio, setDomicilio] = useState("") 
+    const [telefono, setTelefono] = useState("") 
+    const [password, setPassword] = useState("") 
+    const [correo, setCorreo] = useState("") 
+    const [userId, setUserid] = useState("") 
+    const [isAdmin, setIsadmin] = useState(false) 
+    const navigate = useNavigate() 
 
-
-    const [ userId , setUserid ] = useState("")
-    const [ isAdmin , setIsadmin ] = useState(false)
-    const navigate = useNavigate()
-    
-
-
-    
     useEffect(() => {
-
-        const authStatus = async() => {
+        // Función para verificar si el usuario está autenticado.
+        const authStatus = async () => {
             try {
-                // Guardamos la respuesta del servidor, es decir , los datos del usuario logueado.
-                
-                const resp = await axios.get('http://localhost:5050/auth/verify' , { withCredentials : true })
+                // Realizamos una solicitud al servidor para verificar la autenticación.
+                const resp = await axios.get('http://localhost:5050/auth/verify', { withCredentials: true })
 
-                if (resp.status === 200) {
-                    // Guardamos los valores que traemos de los usuarios logueados.
+                if (resp.status === 200) { 
+                    // Si el servidor responde con éxito (status 200), actualizamos los estados con los datos del usuario.
                     setIsauth(true)
-                    setNombre(resp.data.nombre)
-                    setEmpresa(resp.data.empresa)
-                    setDomicilio(resp.data.domicilio)
-                    setTelefono(resp.data.telefono)
-                    setPassword(resp.data.password)
-                    setCorreo(resp.data.correo)
-                    setUserid(resp.data.id)
-                    setIsadmin(resp.data.admin)
-                    console.log(resp.data)
+                    setNombre(resp.data.nombre) // Nombre del usuario desde la respuesta del servidor.
+                    setEmpresa(resp.data.empresa) // Empresa del usuario.
+                    setDomicilio(resp.data.domicilio) // Domicilio del usuario.
+                    setTelefono(resp.data.telefono) // Teléfono del usuario.
+                    setPassword(resp.data.password) // Contraseña (poco recomendable guardar en el frontend).
+                    setCorreo(resp.data.correo) // Correo electrónico.
+                    setUserid(resp.data.id) // Identificador del usuario.
+                    setIsadmin(resp.data.admin) // Rol de administrador.
+                    console.log(resp.data) // Imprimimos los datos del usuario en consola para depuración.
                 } else {
+                    // Si la respuesta no es exitosa, limpiamos los estados y marcamos al usuario como no autenticado.
                     setIsauth(false)
                     setNombre("")
                     setEmpresa("")
@@ -53,9 +47,8 @@ const useAuth = () => {
                     setIsadmin("")
                 }
             } catch (error) {
-
-                console.log(error);
-                
+                // Si ocurre un error (por ejemplo, el servidor no responde), limpiamos los estados y marcamos al usuario como no autenticado.
+                console.error(error) 
                 setIsauth(false)
                 setNombre("")
                 setEmpresa("")
@@ -65,20 +58,23 @@ const useAuth = () => {
                 setCorreo("")
                 setUserid("")
                 setIsadmin("")
-
             }
         }
-        authStatus()
 
-    }, [navigate]) // Esto nos va a permitir entre las rutas.
+        authStatus() // Llamamos a la función para verificar el estado de autenticación al montar el componente.
 
+    }, [navigate]) // Dependencia: `useEffect` se ejecutará si `navigate` cambia (aunque aquí no parece ser necesario).
 
+    // Devolvemos los datos importantes para que los componentes que usen este hook puedan acceder a ellos.
     return {
-        isauth , nombre , empresa , domicilio , correo , password , telefono
+        isauth,
+        nombre, 
+        empresa, 
+        domicilio, 
+        correo, 
+        password,
+        telefono 
     }
-
-    // Aca verificamos la existencia del token, una vez verificada se traen los datos del usuario logueado.
 }
 
-
-export default useAuth
+export default useAuth // Exportamos el hook para usarlo en otros componentes.
