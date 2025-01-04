@@ -20,7 +20,7 @@ const useAuth = () => {
         const authStatus = async () => {
             try {
                 // Realizamos una solicitud al servidor para verificar la autenticación.
-                const resp = await axios.get('http://localhost:5050/auth/verify', { withCredentials: true })
+                const resp = await axios.get('http://localhost:5500/auth/verify', { withCredentials: true })
 
                 if (resp.status === 200) { 
                     // Si el servidor responde con éxito (status 200), actualizamos los estados con los datos del usuario.
@@ -63,7 +63,46 @@ const useAuth = () => {
 
         authStatus() // Llamamos a la función para verificar el estado de autenticación al montar el componente.
 
-    }, [navigate]) // Dependencia: `useEffect` se ejecutará si `navigate` cambia (aunque aquí no parece ser necesario).
+    }, [navigate]) 
+
+
+    const logout = async () => {
+          try {
+             const resp = await axios.get('http://localhost:5500/auth/logout', {withCredentials: true} )
+             if (resp.status === 200) {
+                setIsauth(false)
+                setNombre("")
+                setEmpresa("")
+                setDomicilio("")
+                setTelefono("")
+                setPassword("")
+                setCorreo("")
+                setUserid("")
+                setIsadmin(false)
+               
+                return true
+             
+            } else {
+                
+                return false
+             }
+          } catch (error) {
+            console.log(error);
+            setIsauth(false)
+            setNombre("")
+            setEmpresa("")
+            setDomicilio("")
+            setTelefono("")
+            setPassword("")
+            setCorreo("")
+            setUserid("")
+            setIsadmin(false)
+            
+            return false
+
+          }
+    }
+
 
     // Devolvemos los datos importantes para que los componentes que usen este hook puedan acceder a ellos.
     return {
@@ -73,8 +112,21 @@ const useAuth = () => {
         domicilio, 
         correo, 
         password,
-        telefono 
+        telefono,
+        setCorreo,
+        setNombre,
+        setCorreo,
+        setDomicilio,
+        setPassword,
+        setEmpresa,
+        setTelefono,
+        userId,
+        isAdmin,
+        logout
+
     }
+
 }
+
 
 export default useAuth // Exportamos el hook para usarlo en otros componentes.

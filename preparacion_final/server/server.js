@@ -105,11 +105,11 @@ authRoutes.post('/login-users' , async (req , res) => {
     const {correo , password} = req.body
     const usuario = await user.findOne({correo})
     if(!usuario){
-        return res.status(401).json({resp , message : 'Email o contraseña incorrectos'})
+        return res.status(401).json({usuario , message : 'Email o contraseña incorrectos'})
     }
     // Comparamos la contraseña q envie con el formulario con el usuario que yo traje a traves del correo
     if(password !== usuario.password){
-        return res.status(401).json({resp , message : 'Contraseña Incorrecta'})
+        return res.status(401).json({usuario , message : 'Contraseña Incorrecta'})
     }
 
     // Generamos el token
