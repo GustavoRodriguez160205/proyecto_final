@@ -8,6 +8,7 @@ import Registro from './paginas/Registro'
 import NavBar from './Components/Navbar'
 import Login from './paginas/Login'
 import UserLog  from './paginas/UserLog'
+import Contact from './paginas/Contact'
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
                 <Route path='/Registro' element = {<Registro></Registro>} ></Route>
                 <Route path='/Usuario' element = {<UserLog></UserLog>}></Route>
                 <Route path='/Login' element = {<Login></Login>}></Route>
+                <Route path='/Contactos' element = {<Contact/>}></Route>
 
         </Routes>
 

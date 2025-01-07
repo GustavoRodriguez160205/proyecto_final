@@ -183,6 +183,8 @@ userRoutes.post('/create-contact' , verificarUsuario, async (req , res) => {
           const {correo} = req.body
           // Busco el contacto por correo y verifico de que el correo sea existente
           const contacto = await user.findOne({correo})
+          console.log(contactosData);
+          
           if(contacto){
 
             return res.status(401).json({message: 'Email existente'})
@@ -198,12 +200,12 @@ userRoutes.post('/create-contact' , verificarUsuario, async (req , res) => {
             contactosData.propietario = 'admin'
           }
 
-          // Creamos los contactos en la base de datos
-          const newContact = new user(contactosData)
-          // Guardamos el contacto
-          const respuesta = await newContact.save()
+            // Creamos los contactos en la base de datos
+            const newContact = new user(contactosData)
+            // Guardamos el contacto
+            const respuesta = await newContact.save()
 
-          return res.status(201).json({message: 'Contacto creado con exito' , respuesta})
+            return res.status(201).json({message: 'Contacto creado con exito' , respuesta})
 
        } catch (error) {
           return res.status(500).json(error.message)
