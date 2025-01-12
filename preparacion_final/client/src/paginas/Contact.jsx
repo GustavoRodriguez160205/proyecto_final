@@ -68,7 +68,7 @@ const Contact = () => {
            
         }
         getContact()
-    }, [isAdmin , contactos])
+    }, [isAdmin])
 
 
 

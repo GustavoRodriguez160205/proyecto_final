@@ -246,7 +246,7 @@ userRoutes.get('/get-contact-propietario' , verificarUsuario , async(req , res) 
             return res.status(404).json({message: 'No hay contactos creados' , contactos}) 
 
         } 
-            return res.status(200).json({message: 'Hay contactos creados' , contactos})
+           return res.status(200).json(contactos)
         
      } catch (error) {
         return res.status(500).json(error.message)
