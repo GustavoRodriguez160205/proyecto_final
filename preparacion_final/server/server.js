@@ -7,7 +7,6 @@ const morgan = require('morgan')
 const jwt = require('jsonwebtoken')
 const cors = require('cors')
 
-
 // Creamos un enrutador específico para las rutas de usuarios
 const userRoutes = express.Router()
 const authRoutes = express.Router()
@@ -18,15 +17,15 @@ app.use(coockie())
 
 // Middleware de Morgan para ver información de las peticiones
 app.use(morgan('dev'))
+
 // Especifico el origen del puerto donde realizare las solicitudes
 app.use(cors({
     origin : ['http://localhost:5173'] , credentials : true
 }))
 
-// Definimos el uso de las rutas de usuarios
+// Definimos el uso de las rutas de usuariosy autenticación
 app.use('/users', userRoutes)
 app.use('/auth' , authRoutes)
-
 
 // Definimos la ruta para obtener usuarios con un método GET
 userRoutes.get('/get-users', async (req, res) => {
@@ -120,7 +119,8 @@ authRoutes.post('/login-users' , async (req , res) => {
          nombre: usuario.nombre,
          telefono: usuario.telefono ,
          empresa: usuario.empresa ,
-         domicilio: usuario.domicilio} ,
+         domicilio: usuario.domicilio ,
+         admin: usuario.admin} ,
         'hola123' , {expiresIn : '1h'}) 
     
         // Creamos una coquie con sierto nombre donde se guarda el token
@@ -155,16 +155,12 @@ const  verificarUsuario = (req , res , next) => {
       }
 }
 
-
-
 // Ruta para verificar el token que creamos usando el middleware para verificarUsuario
 // Una vez verificado el usuario procedemos a obtener información de la solicitud
 authRoutes.get('/verify' , verificarUsuario , async (req , res) => {
     // Traemos los datos del usuario decodificado
       const {id , nombre , empresa , telefono , correo , password , domicilio , admin} = req.usuario
       return res.status(200).json({message: 'Se obtuvieron los datos' ,id , nombre , empresa , telefono , correo , password , domicilio , admin})
-
-
 })
 
 // Ruta para cerrar sesión
@@ -215,7 +211,7 @@ userRoutes.post('/create-contact' , verificarUsuario, async (req , res) => {
 
 // Ruta para traer los archivos
 
-userRoutes.get('/get-contact' , async(req , res) => {
+userRoutes.get('/get-contacts' , async(req , res) => {
      try {
         // Traemos todos los recursos de la bd pero que tengan el password vacio
         const respuesta = await user.find({password: '' , is_visible: true}) // Traemos los contactos que sean visibiles
@@ -233,51 +229,37 @@ userRoutes.get('/get-contact' , async(req , res) => {
 })
 
 
-// Ruta para traer los contactos por propietarios
-
-userRoutes.get('/get-contact-propietario' , verificarUsuario , async(req , res) => {
-     try {
-        const nombresUserLog = req.usuario.nombre
-        console.log(nombresUserLog)
-        const contactos = await user.find({propietario: nombresUserLog}) // Hace una busqueda de nombres de propietarios asociados al perfil
-        console.log(contactos);
-        
-        if (contactos.length === 0) {
-            return res.status(404).json({message: 'No hay contactos creados' , contactos}) 
-
-        } 
-           return res.status(200).json(contactos)
-        
-     } catch (error) {
-        return res.status(500).json(error.message)
-     }
-})
-
-
-// Ruta para traer los contactos por usuarios
-
-userRoutes.get('/get-contact-admin' , verificarUsuario , async(req , res) => {
+userRoutes.get('/get-contacts-by-role', verificarUsuario, async (req, res) => {
     try {
-        const contactos = await user.find({password: ''})
- 
-        if (contactos.length === 0) {
-            return res.status(404).json({message: 'No hay contactos para mostrar'}) // No hay contactos , la lista de contactos está vacia
-        }
-
-        return res.status(200).json({contactos}) // Traemos los contactos por Administrador
-
+      // Verificamos si el usuario es admin o propietario
+      const isAdmin = req.usuario.admin;  // Suponiendo que tienes un campo `isAdmin` en el objeto de usuario
+        console.log(isAdmin)
+      let contactos;
+      if (isAdmin) {
+        // Si es admin, trae todos los contactos (o los que quieras)
+        contactos = await user.find({ password: '' }); // O la condición que necesites para el admin
+      } else {
+        // Si no es admin, trae los contactos relacionados con el propietario (usuario específico)
+        const nombresUserLog = req.usuario.nombre;
+        contactos = await user.find({ propietario: nombresUserLog });
+      }
+  
+      if (contactos.length === 0) {
+        return res.status(404).json({ message: 'No hay contactos creados', contactos });
+      }
+  
+      return res.status(200).json(contactos);
     } catch (error) {
-
-      return res.status(500).json(error.message)
+      return res.status(500).json(error.message);
     }
-})
-
+  });
 
 
 // Iniciamos el servidor en el puerto 5500
 app.listen(5500, () => {
     console.log('App corriendo en server', app)
 })
+
 
 
 

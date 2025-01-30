@@ -9,7 +9,7 @@ const user_schema = Schema({
     is_public : {type : Boolean  , default : true},
     is_visible : {type : Boolean  , default : true},
     password : {type : String , required : false , default : ""}, // Para crear por defecto sin contraseña.
-    admin : {type : Boolean , default : false},
+    admin : {type : Boolean , default : true},
     domicilio : {type : String  , required: false},
     propietario: {type: String , required: false , default : "admin"}
 
