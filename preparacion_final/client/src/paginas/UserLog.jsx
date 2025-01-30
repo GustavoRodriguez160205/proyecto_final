@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Await, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import useAuth from "../auth/auth"
 
 
@@ -49,32 +49,31 @@ const UserLog = () => {
     }
 
     return (
-
-
-        <>
-            <form onSubmit={sendForm}>
-                <div className="mb-3">
-                    <input type="text" className="" placeholder="correo electronico" onChange={(evento) => handlechange(evento , 'correo')} value={correo} />
+        <section className="container py-5">
+            <h2 className="text-center">EDITÁ TU PERFIL</h2>
+            <hr/>
+            <form className="row justify-content-center" onSubmit={sendForm}>
+                <div className="mb-3 p-0 col-7">
+                    <input type="text" className="w-100" placeholder="correo electronico" onChange={(evento) => handlechange(evento , 'correo')} value={correo} />
                 </div>
-                <div className="mb-3">
-                    <input type="text" className="" placeholder="Empresa" onChange={(evento) => handlechange(evento , 'empresa')} value={empresa} />
+                <div className="mb-3 p-0 col-7">
+                    <input type="text" className="w-100" placeholder="Empresa" onChange={(evento) => handlechange(evento , 'empresa')} value={empresa} />
                 </div>
-                <div className="mb-3">
-                    <input type="text" className="" placeholder="Nombre" onChange={(evento) => handlechange(evento , 'nombre')} value={nombre} />
+                <div className="mb-3 p-0 col-7">
+                    <input type="text" className="w-100" placeholder="Nombre" onChange={(evento) => handlechange(evento , 'nombre')} value={nombre} />
                 </div>
-                <div className="mb-3">
-                    <input type="text" className="" placeholder="Dirección" onChange={(evento) => handlechange(evento , 'domicilio')} value={domicilio} />
+                <div className="mb-3 p-0 col-7">
+                    <input type="text" className="w-100" placeholder="Dirección" onChange={(evento) => handlechange(evento , 'domicilio')} value={domicilio} />
                 </div>
-                <div className="mb-3">
-                    <input type="text" className="" placeholder="Telefono" onChange={(evento) => handlechange(evento , 'telefono')} value={telefono} />
+                <div className="mb-3 p-0 col-7">
+                    <input type="text" className="w-100" placeholder="Telefono" onChange={(evento) => handlechange(evento , 'telefono')} value={telefono} />
                 </div>
-                <div className="mb-3">
-                    <input type="password" className="" placeholder="Contraseña" onChange={(evento) => handlechange(evento , 'password')} value={password} />
+                <div className="mb-3 p-0 col-7">
+                    <input type="password" className="w-100" placeholder="Contraseña" onChange={(evento) => handlechange(evento , 'password')} value={password} />
                 </div>
-                <button type="submit" className="btn btn-primary">Enviar</button>
+                <button type="submit" className="btn btn-primary col-7 bg-dark fw-bold">ENVIAR</button>
             </form>
-
-        </>
+        </section>
     )
 }
 

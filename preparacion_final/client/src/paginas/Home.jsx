@@ -1,14 +1,11 @@
 // Importamos los hooks de React, el componente Tarjetas, axios y el hook personalizado useAuth.
 import { useEffect, useState } from "react" // useEffect para efectos secundarios y useState para manejar estados.
-import Tarjetas from "../Components/Tarjetas" // Componente para mostrar las tarjetas.
+import Card from "../Components/Card" // Componente para mostrar las tarjetas.
 import axios from "axios" // Librería para hacer solicitudes HTTP.
 
-
 const Home = () => {
-  
   // Definimos el estado para almacenar los contactos que traemos del servidor.
-  const [contactos, setContactos] = useState([]) // Estado inicial vacío para los contactos.
-
+  const [contacts, setContacts] = useState([]) // Estado inicial vacío para los contactos.
 
   // useEffect: Este hook se ejecuta cuando el componente se renderiza. En este caso, solo se ejecuta una vez al estar vacío el array de dependencias.
   useEffect(() => {
@@ -16,10 +13,10 @@ const Home = () => {
     const userData = async () => {
       try {
         // Hacemos una petición GET al servidor para obtener los contactos.
-        const resp = await axios.get("http://localhost:5500/users/get-contact", { withCredentials: true })
+        const resp = await axios.get("http://localhost:5500/users/get-contacts", { withCredentials: true })
         
         // Al recibir la respuesta, actualizamos el estado `contactos` con la lista de contactos.
-        setContactos(resp.data.respuesta)
+        setContacts(resp.data.respuesta)
 
       } catch (error) {
         // Manejo de errores:
@@ -33,30 +30,34 @@ const Home = () => {
     }
     
     userData() // Llamamos a la función `userData` para obtener los contactos desde el servidor.
-  
-
   }, []) // El array vacío significa que el efecto solo se ejecutará una vez, justo después de la primera renderización del componente.
 
   return (
-    <section>
-      {/* Renderizado condicional de los contactos. */}
-      {
-        contactos.length === 0 ? (
-          <p>No hay contactos para mostrar</p>
-        ) : (
-          contactos.map(contacto => (
-            <Tarjetas 
-              key={contacto._id} 
-              nombre={contacto.nombre} 
-              empresa={contacto.empresa} 
-              propietario={contacto.propietario} 
-              correo={contacto.correo} 
-              telefono={contacto.telefono} 
-              domicilio={contacto.domicilio} 
-            />
-          ))
-        )
-      }
+    <section className="container py-5 px-0">
+      <h2>TODOS LOS CONTACTOS</h2>
+      <hr />
+      <div>
+        {/* Renderizado condicional de los contactos. */}
+        {
+          contacts.length === 0 ? (
+            <p>No hay contactos para mostrar</p>
+          ) : (
+            contacts.map(contact => (
+              <Card
+                key={contact._id} 
+                nombre={contact.nombre} 
+                empresa={contact.empresa} 
+                propietario={contact.propietario} 
+                correo={contact.correo} 
+                telefono={contact.telefono} 
+                domicilio={contact.domicilio} 
+                id = {contact.id}
+                disabled = "d-none"
+              />
+            ))
+          )
+        }
+      </div>
     </section>
   )
 }
