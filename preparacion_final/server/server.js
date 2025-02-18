@@ -65,6 +65,7 @@ userRoutes.patch('/edit-users/:id' , async (req , res) => {
         const {id} = req.params
         const usuariosData = req.body
         // Encontramos el usuario por id y lo modificamos 
+        console.log(req.body)
         const resp = await user.findByIdAndUpdate(id , usuariosData , {new : true})
 
         if(!resp){
@@ -114,13 +115,14 @@ authRoutes.post('/login-users' , async (req , res) => {
     // Generamos el token
      const token = jwt.sign(
      {id: usuario._id  , 
-           correo: usuario.correo ,
-          password: usuario.password ,
-         nombre: usuario.nombre,
-         telefono: usuario.telefono ,
-         empresa: usuario.empresa ,
-         domicilio: usuario.domicilio ,
-         admin: usuario.admin} ,
+      id: String(usuario._id),
+      correo: String(usuario.correo),
+      password: String(usuario.password), 
+      nombre: String(usuario.nombre || ''),
+      telefono: String(usuario.telefono || ''),
+      empresa: String(usuario.empresa || ''),
+      domicilio: String(usuario.domicilio || ''),
+      admin: Boolean(usuario.admin)},
         'hola123' , {expiresIn : '1h'}) 
     
         // Creamos una coquie con sierto nombre donde se guarda el token
@@ -140,7 +142,7 @@ authRoutes.post('/login-users' , async (req , res) => {
 const  verificarUsuario = (req , res , next) => {
       const token = req.cookies.llave
       if(!token){
-         return res.status(404).json({message: 'No se encontro el token'} , token)
+         return res.status(404).json({message: 'No se encontro el token', token})
       }
       
       try {
@@ -150,7 +152,7 @@ const  verificarUsuario = (req , res , next) => {
         req.usuario = decode 
         next()
       } catch (error) {
-        return res.status(403).json({message: 'Token Invalido'} , token)
+        return res.status(403).json({message: 'Token Invalido', token})
         
       }
 }
@@ -160,7 +162,7 @@ const  verificarUsuario = (req , res , next) => {
 authRoutes.get('/verify' , verificarUsuario , async (req , res) => {
     // Traemos los datos del usuario decodificado
       const {id , nombre , empresa , telefono , correo , password , domicilio , admin} = req.usuario
-      return res.status(200).json({message: 'Se obtuvieron los datos' ,id , nombre , empresa , telefono , correo , password , domicilio , admin})
+      return res.status(200).json({message: 'Se obtuvieron los datos',id , nombre , empresa , telefono , correo , password , domicilio , admin})
 })
 
 // Ruta para cerrar sesión
@@ -214,7 +216,7 @@ userRoutes.post('/create-contact' , verificarUsuario, async (req , res) => {
 userRoutes.get('/get-contacts' , async(req , res) => {
      try {
         // Traemos todos los recursos de la bd pero que tengan el password vacio
-        const respuesta = await user.find({password: '' , is_visible: true}) // Traemos los contactos que sean visibiles
+        const respuesta = await user.find({password: '' , is_visible: true}).sort({ nombre: 1 }); // Traemos los contactos que sean visibiles
         console.log(respuesta);
         
         if (respuesta.length === 0) {
@@ -259,7 +261,3 @@ userRoutes.get('/get-contacts-by-role', verificarUsuario, async (req, res) => {
 app.listen(5500, () => {
     console.log('App corriendo en server', app)
 })
-
-
-
-

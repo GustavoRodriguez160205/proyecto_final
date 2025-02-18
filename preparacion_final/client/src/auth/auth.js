@@ -14,13 +14,26 @@ const useAuth = () => {
     const [userId, setUserid] = useState("") 
     const [isAdmin, setIsadmin] = useState(false) 
     const navigate = useNavigate() 
+    const API_URL = 'http://localhost:5500/auth/'
+
+    const resetUserData = () => {
+            setIsauth(false)
+            setNombre("")
+            setEmpresa("")
+            setDomicilio("")
+            setTelefono("")
+            setPassword("")
+            setCorreo("")
+            setUserid("")
+            setIsadmin("")
+    };
 
     useEffect(() => {
         // Función para verificar si el usuario está autenticado.
         const authStatus = async () => {
             try {
                 // Realizamos una solicitud al servidor para verificar la autenticación.
-                const resp = await axios.get('http://localhost:5500/auth/verify', { withCredentials: true })
+                const resp = await axios.get(`${API_URL}verify`, { withCredentials: true })
 
                 if (resp.status === 200) { 
                     // Si el servidor responde con éxito (status 200), actualizamos los estados con los datos del usuario.
@@ -36,28 +49,12 @@ const useAuth = () => {
                     console.log(resp.data) // Imprimimos los datos del usuario en consola para depuración.
                 } else {
                     // Si la respuesta no es exitosa, limpiamos los estados y marcamos al usuario como no autenticado.
-                    setIsauth(false)
-                    setNombre("")
-                    setEmpresa("")
-                    setDomicilio("")
-                    setTelefono("")
-                    setPassword("")
-                    setCorreo("")
-                    setUserid("")
-                    setIsadmin("")
+                    resetUserData()
                 }
             } catch (error) {
                 // Si ocurre un error (por ejemplo, el servidor no responde), limpiamos los estados y marcamos al usuario como no autenticado.
                 console.error(error) 
-                setIsauth(false)
-                setNombre("")
-                setEmpresa("")
-                setDomicilio("")
-                setTelefono("")
-                setPassword("")
-                setCorreo("")
-                setUserid("")
-                setIsadmin("")
+                resetUserData()
             }
         }
 
@@ -65,21 +62,11 @@ const useAuth = () => {
 
     }, [navigate]) 
 
-
     const logout = async () => {
           try {
-             const resp = await axios.get('http://localhost:5500/auth/logout', {withCredentials: true} )
+             const resp = await axios.get(`${API_URL}logout`, {withCredentials: true} )
              if (resp.status === 200) {
-                setIsauth(false)
-                setNombre("")
-                setEmpresa("")
-                setDomicilio("")
-                setTelefono("")
-                setPassword("")
-                setCorreo("")
-                setUserid("")
-                setIsadmin(false)
-               
+                resetUserData()
                 return true
              
             } else {
@@ -88,21 +75,10 @@ const useAuth = () => {
              }
           } catch (error) {
             console.log(error);
-            setIsauth(false)
-            setNombre("")
-            setEmpresa("")
-            setDomicilio("")
-            setTelefono("")
-            setPassword("")
-            setCorreo("")
-            setUserid("")
-            setIsadmin(false)
-            
+            resetUserData()
             return false
-
           }
     }
-
 
     // Devolvemos los datos importantes para que los componentes que usen este hook puedan acceder a ellos.
     return {
@@ -115,7 +91,6 @@ const useAuth = () => {
         telefono,
         setCorreo,
         setNombre,
-        setCorreo,
         setDomicilio,
         setPassword,
         setEmpresa,
@@ -123,10 +98,7 @@ const useAuth = () => {
         userId,
         isAdmin,
         logout
-
     }
-
 }
-
 
 export default useAuth // Exportamos el hook para usarlo en otros componentes.

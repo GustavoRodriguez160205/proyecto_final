@@ -13,13 +13,14 @@ const Contact = () => {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(true)
   const { isAdmin } = useAuth()
+  const API_URL = 'http://localhost:5500/users/'
 
 
   const sendForm = async (evento) => {
     evento.preventDefault()
     try {
       const resp = await axios.post(
-        "http://localhost:5500/users/create-contact",
+        `${API_URL}create-contact`,
         { nombre, empresa, domicilio, telefono, correo }
       )
       alert("Contacto creado correctamente.")
@@ -39,7 +40,7 @@ const Contact = () => {
 
   const contactVisibility = async (id, newVisibility) => {
     try {
-      await axios.patch(`http://localhost:5500/users/edit-users/${id}`, {
+      await axios.patch( `${API_URL}edit-users/${id}`, {
         is_visible: newVisibility,
       })
       setContacts(
@@ -59,7 +60,7 @@ const Contact = () => {
 
   const contactPrivacity = async (id, newPrivacity) => {
     try {
-      await axios.patch(`http://localhost:5500/users/edit-users/${id}`, {
+      await axios.patch(`${API_URL}edit-users/${id}`, {
         is_public: newPrivacity,
       })
       setContacts(
@@ -103,7 +104,6 @@ const Contact = () => {
     );
   };
   
-
   const deleteContact = (id) => {
     setContacts(contacts.filter((contact) => contact._id !== id))
   }
@@ -116,7 +116,7 @@ const Contact = () => {
       }
     
       try {
-        const resp = await axios.get("http://localhost:5500/users/get-contacts-by-role", { withCredentials: true });
+        const resp = await axios.get( `${API_URL}get-contacts-by-role`, { withCredentials: true });
         setContacts(resp.data);
       } catch (error) {
         if (error.response && error.response.status === 404) {

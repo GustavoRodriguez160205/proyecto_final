@@ -11,7 +11,7 @@ const UserLog = () => {
         evento.preventDefault()
 
         try {
-            await axios.patch(`http://localhost:5500/user/edit-users/${userId}`, { nombre, empresa, correo, password, domicilio, telefono })
+            await axios.patch(`http://localhost:5500/users/edit-users/${userId}`, { nombre, empresa, correo, password, domicilio, telefono })
             alert('Usuario Actualizado')
             navigate('/')
         } catch (error) {

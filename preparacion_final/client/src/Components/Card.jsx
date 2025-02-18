@@ -30,11 +30,12 @@ const Card = ({
   const [isVisible, setIsVisible] = useState(isVisibleProp)
   const [isPublic, setIsPublic] = useState(isPublicProp)
   const { isAdmin } = useAuth()
+  const API_URL =  'http://localhost:5500/users/'
 
   const handleDelete = async () => {
     try {
         await axios.delete(
-            `http://localhost:5500/users/delete-users/${id}`
+            `${API_URL}delete-users/${id}`
         )
         onDelete(id)
     } catch (error) {
@@ -48,7 +49,7 @@ const Card = ({
 
   const saveEdition = async () => {
     try {
-        await axios.patch(`http://localhost:5500/users/edit-users/${id}`, {
+        await axios.patch(`${API_URL}edit-users/${id}`, {
             nombre: newNombre,
             empresa: newEmpresa,
             domicilio: newDomicilio,
